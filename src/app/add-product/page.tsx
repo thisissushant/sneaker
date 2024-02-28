@@ -1,4 +1,4 @@
-import prisma from "@/lib/db/prisma";
+import { prisma } from "@/lib/db/prisma";
 import { redirect } from "next/navigation";
 export const metadata = {
   title: "Add Product - Sneaker",
@@ -8,47 +8,49 @@ async function addProduct(formData: FormData) {
 
   const name = formData.get("name")?.toString();
   const description = formData.get("description")?.toString();
-  const price = Number(formData.get("price") || 0);
   const imageUrl = formData.get("imageUrl")?.toString();
+  const price = Number(formData.get("price") || 0);
 
-  if (!name || !description || !price || !imageUrl) {
-    throw Error("All the fields are required");
+  if (!name || !description || !imageUrl || !price) {
+    throw Error("Missing required fields");
   }
+
   await prisma.product.create({
-    data: { name, price, imageUrl, description },
+    data: { name, description, imageUrl, price },
   });
+
+  redirect("/");
 }
 export default function AddProductPage() {
   return (
     <div>
-      <h1 className="text-lg mb-3 font-bold ">Product Page</h1>
+      <h1 className="mb-3 text-lg font-bold">Add Product</h1>
       <form action={addProduct}>
         <input
           required
           name="name"
-          type="text"
           placeholder="Name"
-          className=" mb-3 input input-bordered w-full "
+          className="input-bordered input mb-3 w-full"
         />
         <textarea
           required
-          name="discription"
-          placeholder="Description"
-          className="textarea-bordered textarea mb-3 w-full "
+          name="description"
+          placeholder="Discription"
+          className="textarea-bordered textarea mb-3 w-full"
         />
         <input
           required
           name="imageUrl"
+          placeholder="Image URL"
           type="url"
-          placeholder="Image Url"
-          className=" mb-3 input input-bordered w-full "
+          className="input-bordered input mb-3 w-full"
         />
         <input
           required
           name="price"
-          type="number"
           placeholder="Price"
-          className=" mb-3 input input-bordered w-full "
+          type="number"
+          className="input-bordered input mb-3 w-full"
         />
         <button className="btn btn-primary btn-block" type="submit">
           Add Product
