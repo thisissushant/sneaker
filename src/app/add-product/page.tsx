@@ -1,8 +1,29 @@
+import prisma from "@/lib/db/prisma";
+import { redirect } from "next/navigation";
+export const metadata = {
+  title: "Add Product - Sneaker",
+};
+async function addProduct(formData: FormData) {
+  "use server";
+
+  const name = formData.get("name")?.toString();
+  const description = formData.get("description")?.toString();
+  const price = Number(formData.get("price") || 0);
+  const imageUrl = formData.get("imageUrl")?.toString();
+
+  if (!name || !description || !price || !imageUrl) {
+    throw Error("All the fields are required");
+  }
+  await prisma.product.create({
+    data: { name, price, imageUrl, description },
+  });
+  redirect("/");
+}
 export default function AddProductPage() {
   return (
     <div>
       <h1 className="text-lg mb-3 font-bold ">Product Page</h1>
-      <form>
+      <form action={addProduct}>
         <input
           required
           name="name"
