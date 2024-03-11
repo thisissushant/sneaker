@@ -8,7 +8,7 @@ import UserMenuButton from "./UserMenuButton";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 
-async function searchProducts(formData: formData) {
+async function searchProducts(formData: FormData) {
   "use server";
   const searchQuery = formData.get("searchQuery")?.toString();
 
